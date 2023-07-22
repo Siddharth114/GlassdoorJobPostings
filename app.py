@@ -85,16 +85,10 @@ def main():
             state_counts = {}
             states = df['job_state'].unique()
             for state in states:
-                state_counts[state] = df['job_state'].value_counts()[state]
+                state_counts[state.strip()] = df['job_state'].value_counts()[state]
             states_df = pd.DataFrame.from_dict(state_counts, orient="index", columns=["Number of Job Postings"])
             states_df = states_df.reset_index()
             states_df.rename(columns={'index':'State'}, inplace=True)
-
-            states_df.to_csv('test.csv')
-
-            st.dataframe(states_df)
-
-            # fig=px.pie(states_df, values='Number of Job Postings', names='State')
 
             fig = px.choropleth(states_df, locations='State', locationmode='USA-states', color='Number of Job Postings',
                     scope='usa', color_continuous_scale='Blues',
