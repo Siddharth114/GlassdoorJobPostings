@@ -78,7 +78,6 @@ def main():
             titles_df = pd.DataFrame.from_dict(title_counts, orient="index", columns=["Number of Job Postings"])
             titles_df = titles_df.reset_index()
             titles_df.rename(columns={'index':'Job Title'}, inplace=True)
-            
             fig = px.pie(titles_df, values='Number of Job Postings', names='Job Title', hole=0.4, color_discrete_sequence=px.colors.qualitative.Antique)
             st.plotly_chart(fig, use_container_width=True)
 
@@ -89,16 +88,17 @@ def main():
                 state_counts[state] = df['job_state'].value_counts()[state]
             states_df = pd.DataFrame.from_dict(state_counts, orient="index", columns=["Number of Job Postings"])
             states_df = states_df.reset_index()
-            states_df = states_df.rename(columns={'index':'State'})
+            states_df.rename(columns={'index':'State'}, inplace=True)
+
+            states_df.to_csv('test.csv')
 
             st.dataframe(states_df)
+
+            # fig=px.pie(states_df, values='Number of Job Postings', names='State')
 
             fig = px.choropleth(states_df, locations='State', locationmode='USA-states', color='Number of Job Postings',
                     scope='usa', color_continuous_scale='Blues',
                     title='USA States and Counts')
-            
-
-            # fig = px.choropleth(states_df, locations='State', locationmode="USA-states", scope="usa", color='Number of Job Postings')
             st.plotly_chart(fig, use_container_width=True)
 
 
