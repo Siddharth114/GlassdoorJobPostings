@@ -71,6 +71,8 @@ def main():
             title_counts = {}
             titles = df['job_simp'].unique()
             for title in titles:
+                if title=='Unspecified':
+                    continue
                 title_counts[title.capitalize()] = df['job_simp'].value_counts()[title]
             
             titles_df = pd.DataFrame.from_dict(title_counts, orient="index", columns=["Number of Job Postings"])
@@ -80,6 +82,24 @@ def main():
             fig = px.pie(titles_df, values='Number of Job Postings', names='Job Title', hole=0.4, color_discrete_sequence=px.colors.qualitative.Antique)
             st.plotly_chart(fig, use_container_width=True)
 
+
+            state_counts = {}
+            states = df['job_state'].unique()
+            for state in states:
+                state_counts[state] = df['job_state'].value_counts()[state]
+            states_df = pd.DataFrame.from_dict(state_counts, orient="index", columns=["Number of Job Postings"])
+            states_df = states_df.reset_index()
+            states_df = states_df.rename(columns={'index':'State'})
+
+            st.dataframe(states_df)
+
+            fig = px.choropleth(states_df, locations='State', locationmode='USA-states', color='Number of Job Postings',
+                    scope='usa', color_continuous_scale='Blues',
+                    title='USA States and Counts')
+            
+
+            # fig = px.choropleth(states_df, locations='State', locationmode="USA-states", scope="usa", color='Number of Job Postings')
+            st.plotly_chart(fig, use_container_width=True)
 
 
         else:
@@ -118,6 +138,8 @@ def main():
             title_counts = {}
             titles = sector_filter_df_copy['job_simp'].unique()
             for title in titles:
+                if title=='Unspecified':
+                    continue
                 title_counts[title.capitalize()] = sector_filter_df_copy['job_simp'].value_counts()[title]
             
             titles_df = pd.DataFrame.from_dict(title_counts, orient="index", columns=["Number of Job Postings"])
