@@ -5,6 +5,8 @@ from streamlit_option_menu import option_menu
 import seaborn as sns
 import matplotlib.pyplot as plt
 import plotly.express as px
+import pygwalker as pyg
+import streamlit.components.v1 as components
 
 df = pd.read_csv("DS_jobs.csv")
 df[["Location City", "Location State"]] = df.Location.str.split(", ", expand=True)
@@ -392,6 +394,9 @@ def main():
             )
             st.plotly_chart(fig, use_container_width=True)
 
+    else:
+        pyg_html = pyg.walk(df, return_html=True)
+        components.html(pyg_html, height=1000, scrolling=True)
 
 if __name__ == "__main__":
     main()
