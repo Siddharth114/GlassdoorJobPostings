@@ -29,6 +29,8 @@ overall_max_salary = round(sum(df["max_salary"]) / len(df["max_salary"]), 2)
 
 st.set_page_config(layout="wide")
 
+with open('styles.css') as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
 def main():
     nav = option_menu(None, ["Home", 'PygWalker Exploration'], icons=['house', 'clipboard2-data'], default_index=0, menu_icon='list', orientation='horizontal')
