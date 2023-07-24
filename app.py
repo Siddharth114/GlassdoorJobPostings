@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import plotly.express as px
 import pygwalker as pyg
 import streamlit.components.v1 as components
+from streamlit_extras.metric_cards import style_metric_cards
 
 df = pd.read_csv("DS_jobs.csv")
 df[["Location City", "Location State"]] = df.Location.str.split(", ", expand=True)
@@ -29,23 +30,20 @@ overall_max_salary = round(sum(df["max_salary"]) / len(df["max_salary"]), 2)
 
 st.set_page_config(layout="wide")
 
-with open("styles.css") as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
 
 def main():
     nav = option_menu(
         None,
-        ["Home", "PygWalker Exploration"],
-        icons=["house", "clipboard2-data"],
+        ["Filter by Sector", "Filter by State", "PygWalker Exploration"],
+        icons=["building", "geo-alt", "clipboard2-data"],
         default_index=0,
         menu_icon="list",
         orientation="horizontal",
     )
 
-    if nav == "Home":
+    if nav == "Filter by Sector":
         sector_select = st.sidebar.selectbox(
-            "Filter by Sector",
+            "",
             (
                 "All sectors",
                 "Insurance",
@@ -88,7 +86,7 @@ def main():
                 .aggregate(agg_functions)
                 .reset_index()
             )
-
+            st.subheader("Number of Job Postings per Industry")
             fig = px.bar(
                 sectors_df,
                 x="Sector",
@@ -97,20 +95,27 @@ def main():
             )
             st.plotly_chart(fig, use_container_width=True)
 
+            st.divider()
+
+            st.subheader("Overall Salary Metrics (in thousands of dollars)")
             col1, col2, col3 = st.columns(3)
             col1.metric(
-                "Overall Average Salary (in thousands of dollars)",
+                "Average Salary",
                 f"{overall_avg_salary}",
             )
             col2.metric(
-                "Overall Average Starting Salary (in thousands of dollars)",
+                "Average Starting Salary",
                 f"{overall_min_salary}",
             )
             col3.metric(
-                "Overall Average Maximum Salary (in thousands of dollars)",
+                "Average Maximum Salary",
                 f"{overall_max_salary}",
             )
 
+            style_metric_cards(border_left_color="#4682A9", background_color="#212A3E")
+
+            st.divider()
+            col1, col2 = st.columns(2)
             skill_counts = {}
             skills = [
                 "python",
@@ -140,8 +145,8 @@ def main():
                 hole=0.4,
                 color_discrete_sequence=px.colors.qualitative.Antique,
             )
-            st.plotly_chart(fig, use_container_width=True)
-
+            col1.subheader("Skill Distribution")
+            col1.plotly_chart(fig, use_container_width=True)
             title_counts = {}
             titles = df["job_simp"].unique()
             for title in titles:
@@ -161,7 +166,8 @@ def main():
                 hole=0.4,
                 color_discrete_sequence=px.colors.qualitative.Antique,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            col2.subheader("Job Title Distribution")
+            col2.plotly_chart(fig, use_container_width=True)
 
             state_counts = {}
             states = [
@@ -226,6 +232,7 @@ def main():
             )
             states_df = states_df.reset_index()
             states_df.rename(columns={"index": "State"}, inplace=True)
+            st.divider()
 
             fig = px.choropleth(
                 states_df,
@@ -233,9 +240,9 @@ def main():
                 locationmode="USA-states",
                 color="Number of Job Postings",
                 scope="usa",
-                color_continuous_scale="teal",
-                title="USA States and Counts",
+                color_continuous_scale="mint",
             )
+            st.subheader("State Heatmap")
             st.plotly_chart(fig, use_container_width=True)
 
         else:
@@ -247,7 +254,7 @@ def main():
                 .size()
                 .reset_index(name="Number of Job Postings")
             )
-
+            st.subheader("Number of Job Postings per Industry")
             fig = px.bar(
                 sector_filter_df,
                 x="Industry",
@@ -255,6 +262,9 @@ def main():
                 color_discrete_sequence=px.colors.qualitative.Antique,
             )
             st.plotly_chart(fig, use_container_width=True)
+            st.divider()
+
+            st.subheader("Sector Salary vs. Overall Salary (in thousands of dollars)")
 
             sector_filter_df_copy = df[df["Sector"] == sector_select]
             sector_avg_salary = round(
@@ -275,20 +285,24 @@ def main():
 
             col1, col2, col3 = st.columns(3)
             col1.metric(
-                "Sector Average Salary (in thousands of dollars)",
+                "Average Salary",
                 f"{sector_avg_salary}",
                 round(sector_avg_salary - overall_avg_salary, 2),
             )
             col2.metric(
-                "Sector Average Starting Salary (in thousands of dollars)",
+                "Average Starting Salary",
                 f"{sector_min_salary}",
                 round(sector_min_salary - overall_min_salary, 2),
             )
             col3.metric(
-                "Sector Average Maximum Salary (in thousands of dollars)",
+                "Average Maximum Salary",
                 f"{sector_max_salary}",
                 round(sector_max_salary - overall_max_salary, 2),
             )
+
+            style_metric_cards(border_left_color="#4682A9", background_color="#212A3E")
+
+            col1, col2 = st.columns(2)
 
             sector_filter_df_copy = df[df["Sector"] == sector_select]
             skill_counts = {}
@@ -304,8 +318,8 @@ def main():
             for skill in skills:
                 try:
                     skill_counts[skill.capitalize()] = sector_filter_df_copy[
-                    skill
-                ].value_counts()[skill]
+                        skill
+                    ].value_counts()[skill]
                 except:
                     skill_counts[skill.capitalize()] = 0
 
@@ -322,7 +336,8 @@ def main():
                 hole=0.4,
                 color_discrete_sequence=px.colors.qualitative.Antique,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            col1.subheader("Skill Distribution")
+            col1.plotly_chart(fig, use_container_width=True)
 
             sector_filter_df_copy = df[df["Sector"] == sector_select]
             title_counts = {}
@@ -347,7 +362,8 @@ def main():
                 hole=0.4,
                 color_discrete_sequence=px.colors.qualitative.Antique,
             )
-            st.plotly_chart(fig, use_container_width=True)
+            col2.subheader("Job Title Distribution")
+            col2.plotly_chart(fig, use_container_width=True)
 
             sector_filter_df_copy = df[df["Sector"] == sector_select]
             state_counts = {}
@@ -416,15 +432,16 @@ def main():
             states_df = states_df.reset_index()
             states_df.rename(columns={"index": "State"}, inplace=True)
 
+            st.divider()
             fig = px.choropleth(
                 states_df,
                 locations="State",
                 locationmode="USA-states",
                 color="Number of Job Postings",
                 scope="usa",
-                color_continuous_scale="teal",
-                title="USA States and Counts",
+                color_continuous_scale="mint",
             )
+            st.subheader("State Heatmap")
             st.plotly_chart(fig, use_container_width=True)
 
     else:
