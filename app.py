@@ -444,7 +444,7 @@ def main():
             st.subheader("State Heatmap")
             st.plotly_chart(fig, use_container_width=True)
 
-    else:
+    elif nav=='PygWalker Exploration':
         pyg_html = pyg.walk(df, return_html=True)
         components.html(pyg_html, height=1000, scrolling=True)
 
