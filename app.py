@@ -29,14 +29,22 @@ overall_max_salary = round(sum(df["max_salary"]) / len(df["max_salary"]), 2)
 
 st.set_page_config(layout="wide")
 
-with open('styles.css') as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+with open("styles.css") as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
 
 def main():
-    nav = option_menu(None, ["Home", 'PygWalker Exploration'], icons=['house', 'clipboard2-data'], default_index=0, menu_icon='list', orientation='horizontal')
+    nav = option_menu(
+        None,
+        ["Home", "PygWalker Exploration"],
+        icons=["house", "clipboard2-data"],
+        default_index=0,
+        menu_icon="list",
+        orientation="horizontal",
+    )
 
-    if nav=='Home':
-        sector_select = st.selectbox(
+    if nav == "Home":
+        sector_select = st.sidebar.selectbox(
             "Filter by Sector",
             (
                 "All sectors",
@@ -91,7 +99,8 @@ def main():
 
             col1, col2, col3 = st.columns(3)
             col1.metric(
-                "Overall Average Salary (in thousands of dollars)", f"{overall_avg_salary}"
+                "Overall Average Salary (in thousands of dollars)",
+                f"{overall_avg_salary}",
             )
             col2.metric(
                 "Overall Average Starting Salary (in thousands of dollars)",
@@ -103,9 +112,20 @@ def main():
             )
 
             skill_counts = {}
-            skills = ["python", "excel", "hadoop", "spark", "aws", "tableau", "big_data"]
+            skills = [
+                "python",
+                "excel",
+                "hadoop",
+                "spark",
+                "aws",
+                "tableau",
+                "big_data",
+            ]
             for skill in skills:
-                skill_counts[skill.capitalize()] = df[skill].value_counts()[skill]
+                try:
+                    skill_counts[skill.capitalize()] = df[skill].value_counts()[skill]
+                except:
+                    skill_counts[skill.capitalize()] = 0
 
             skills_df = pd.DataFrame.from_dict(
                 skill_counts, orient="index", columns=["Number of Job Postings"]
@@ -272,11 +292,22 @@ def main():
 
             sector_filter_df_copy = df[df["Sector"] == sector_select]
             skill_counts = {}
-            skills = ["python", "excel", "hadoop", "spark", "aws", "tableau", "big_data"]
+            skills = [
+                "python",
+                "excel",
+                "hadoop",
+                "spark",
+                "aws",
+                "tableau",
+                "big_data",
+            ]
             for skill in skills:
-                skill_counts[skill.capitalize()] = sector_filter_df_copy[
+                try:
+                    skill_counts[skill.capitalize()] = sector_filter_df_copy[
                     skill
                 ].value_counts()[skill]
+                except:
+                    skill_counts[skill.capitalize()] = 0
 
             sector_filter_skills_df = pd.DataFrame.from_dict(
                 skill_counts, orient="index", columns=["Number of Job Postings"]
@@ -399,6 +430,7 @@ def main():
     else:
         pyg_html = pyg.walk(df, return_html=True)
         components.html(pyg_html, height=1000, scrolling=True)
+
 
 if __name__ == "__main__":
     main()
