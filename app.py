@@ -326,7 +326,7 @@ def main():
         st.divider()
 
         st.subheader(
-            "Overall Rating Metrics (out of 5)"
+            "Overall Job Rating Metrics (out of 5)"
             if sector_select == "All Sectors"
             else "Sector-wise job rating vs. Overall rating (out of 5)",
             help='Overall job rating metrics' if sector_select=='All Sectors' else 'Comparison of rating metrics of the filtered sector with overall rating'
@@ -514,7 +514,7 @@ def main():
         st.divider()
 
         st.subheader(
-            "Overall Rating Metrics (out of 5)"
+            "Overall Job Rating Metrics (out of 5)"
             if state_select == "All States"
             else "State-wise job rating vs. Overall rating (out of 5)",
             help='Overall job rating metrics' if state_select=='All States' else 'Comparison of rating metrics of the filtered state with overall rating'
