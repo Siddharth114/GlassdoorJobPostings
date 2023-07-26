@@ -72,14 +72,18 @@ state_codes = {
     "West Virginia": "WV",
 }
 
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title='DataGlimpse',
+    page_icon='📊',
+    layout="wide"
+    )
 
 
 def main():
     nav = option_menu(
         None,
-        ["Filter by Sector", "Filter by State", "PygWalker Exploration"],
-        icons=["building", "geo-alt", "clipboard2-data"],
+        ["Filter by Sector", "Filter by State", "PygWalker Exploration", "Info"],
+        icons=["building", "geo-alt", "clipboard2-data", 'info'],
         default_index=0,
         menu_icon="list",
         orientation="horizontal",
@@ -533,6 +537,25 @@ def main():
     elif nav=='PygWalker Exploration':
         pyg_html = pyg.walk(df, return_html=True)
         components.html(pyg_html, height=1000, scrolling=True)
+
+    elif nav=='Info':
+        st.header('DataGlimpse: A Window into the Data Science Job Market')
+        st.markdown('''
+        DataGlimpse, a cutting-edge dashboard web app, is your gateway to the dynamic world of data science job postings on Glassdoor.
+        With DataGlimpse, you can filter job postings by sector or by state to see what kind of data science jobs are available in your area of interest.
+        DataGlimpse offers an all-encompassing view of coveted data science positions, right at your fingertips.
+        Explore the fascinating realm of data science job postings with features that empower you to make informed decisions:
+
+        * Sector-wise Insights: DataGlimpse allows you to effortlessly gauge the demand for data science professionals across various sectors. Uncover the hottest sectors with the most promising job prospects and stay ahead of the competition.
+
+        * Skill Distribution Analysis: Wondering which skills are in high demand? DataGlimpse showcases the distribution of key skills such as Python, AWS, Tableau, SQL, and more. Gain a competitive edge by identifying the skills that can elevate your career to new heights.
+
+        * Job Role Breakdown: Delve into the different job roles in the data science landscape, from data analysts to data engineers. DataGlimpse provides a comprehensive breakdown of these roles, enabling you to align your aspirations with the right job titles.
+
+        * Number of Jobs Per Sector: Curious about the abundance of job opportunities in each sector? DataGlimpse offers an overview of the number of data science jobs available in specific industries, guiding you towards the most favorable career paths.
+                    
+        Embrace the future of job hunting with DataGlimpse - your ultimate companion in navigating the ever-evolving data science job market!
+''')
 
 
 if __name__ == "__main__":
