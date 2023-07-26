@@ -72,18 +72,14 @@ state_codes = {
     "West Virginia": "WV",
 }
 
-st.set_page_config(
-    page_title='DataGlimpse',
-    page_icon='📊',
-    layout="wide"
-    )
+st.set_page_config(page_title="DataGlimpse", page_icon="📊", layout="wide")
 
 
 def main():
     nav = option_menu(
         None,
         ["Filter by Sector", "Filter by State", "PygWalker Exploration", "Info"],
-        icons=["building", "geo-alt", "clipboard2-data", 'info'],
+        icons=["building", "geo-alt", "clipboard2-data", "info"],
         default_index=0,
         menu_icon="list",
         orientation="horizontal",
@@ -136,7 +132,7 @@ def main():
         )
         st.subheader(
             f"Number of Job Postings by {'Industry' if sector_select!='All Sectors' else 'Sector'}",
-            help=f'Bar Chart visualising the number of job postings in each {"industry of the filtered sector" if sector_select!="All Sectors" else "sector"} '
+            help=f'Bar Chart visualising the number of job postings in each {"industry of the filtered sector" if sector_select!="All Sectors" else "sector"} ',
         )
         fig = px.bar(
             bar_chart_df,
@@ -158,7 +154,9 @@ def main():
             "Overall Salary Metrics (in thousands of dollars)"
             if sector_select == "All Sectors"
             else "Sector Salary vs. Overall Salary (in thousands of dollars)",
-            help='Metrics of the salary of all job postings' if sector_select=='All Sectors' else 'Comparison of filtered sector\'s salary metrics with overall salary'
+            help="Metrics of the salary of all job postings"
+            if sector_select == "All Sectors"
+            else "Comparison of filtered sector's salary metrics with overall salary",
         )
         col1, col2, col3 = st.columns(3)
         col1.metric(
@@ -220,7 +218,10 @@ def main():
             hole=0.4,
             color_discrete_sequence=px.colors.qualitative.Antique,
         )
-        col1.subheader("Skill Distribution", help='Distribution of various skills used in the filtered sector')
+        col1.subheader(
+            "Skill Distribution",
+            help="Distribution of various skills used in the filtered sector",
+        )
         col1.plotly_chart(fig, use_container_width=True)
 
         title_counts = {}
@@ -246,7 +247,10 @@ def main():
             hole=0.4,
             color_discrete_sequence=px.colors.qualitative.Antique,
         )
-        col2.subheader("Job Title Distribution", help='Distribution of various job titles in the filtered sector')
+        col2.subheader(
+            "Job Title Distribution",
+            help="Distribution of various job titles in the filtered sector",
+        )
         col2.plotly_chart(fig, use_container_width=True)
         st.divider()
 
@@ -325,7 +329,10 @@ def main():
             scope="usa",
             color_continuous_scale="mint",
         )
-        st.subheader("State Heatmap", help='A heatmap showing the number of job postings categorized by each state')
+        st.subheader(
+            "State Heatmap",
+            help="A heatmap showing the number of job postings categorized by each state",
+        )
         st.plotly_chart(fig, use_container_width=True)
         st.divider()
 
@@ -333,7 +340,9 @@ def main():
             "Overall Job Rating Metrics (out of 5)"
             if sector_select == "All Sectors"
             else "Sector-wise job rating vs. Overall rating (out of 5)",
-            help='Overall job rating metrics' if sector_select=='All Sectors' else 'Comparison of rating metrics of the filtered sector with overall rating'
+            help="Overall job rating metrics"
+            if sector_select == "All Sectors"
+            else "Comparison of rating metrics of the filtered sector with overall rating",
         )
         col1, col2, col3 = st.columns([1, 3, 1])
         filtered_rating = round(sector_df["Rating"].mean(), 2)
@@ -393,32 +402,34 @@ def main():
             ),
         )
 
-        if state_select=='All States':
+        if state_select == "All States":
             state_df = df.copy()
         else:
-            state_df = df[df['job_state']==state_codes[state_select]]
-        
+            state_df = df[df["job_state"] == state_codes[state_select]]
 
-        bar_chart_df = state_df['Sector']
+        bar_chart_df = state_df["Sector"]
         bar_chart_df = bar_chart_df.reset_index()
         bar_chart_df.drop(columns=("index"), inplace=True)
 
         bar_chart_df = (
-            bar_chart_df.groupby('Sector').size().reset_index(name='Number of Job Postings')
+            bar_chart_df.groupby("Sector")
+            .size()
+            .reset_index(name="Number of Job Postings")
         )
-        
-        
-        st.subheader("Number of Job Postings by Sector", help='A visualisation of the number of job postings of each sector in the filtered state')
-        fig=px.bar(
+
+        st.subheader(
+            "Number of Job Postings by Sector",
+            help="A visualisation of the number of job postings of each sector in the filtered state",
+        )
+        fig = px.bar(
             bar_chart_df,
-            x='Sector',
-            y='Number of Job Postings',
+            x="Sector",
+            y="Number of Job Postings",
             color_discrete_sequence=px.colors.qualitative.Antique,
         )
         st.plotly_chart(fig, use_container_width=True)
         st.divider()
 
-        
         filtered_avg_salary = round(state_df["avg_salary"].mean(), 2)
         filtered_min_salary = round(state_df["min_salary"].mean(), 2)
         filtered_max_salary = round(state_df["max_salary"].mean(), 2)
@@ -427,7 +438,9 @@ def main():
             "Overall Salary Metrics (in thousands of dollars)"
             if state_select == "All States"
             else "State Salary vs. Overall Salary (in thousands of dollars)",
-            help='Metrics of the salary of all job postings' if state_select=='All States' else 'Comparison of filtered state\'s salary metrics with overall salary'
+            help="Metrics of the salary of all job postings"
+            if state_select == "All States"
+            else "Comparison of filtered state's salary metrics with overall salary",
         )
         col1, col2, col3 = st.columns(3)
         col1.metric(
@@ -470,9 +483,7 @@ def main():
         ]
         for skill in skills:
             try:
-                skill_counts[skill.capitalize()] = state_df[skill].value_counts()[
-                    skill
-                ]
+                skill_counts[skill.capitalize()] = state_df[skill].value_counts()[skill]
             except:
                 skill_counts[skill.capitalize()] = 0
         skill_df = pd.DataFrame.from_dict(
@@ -487,7 +498,10 @@ def main():
             hole=0.4,
             color_discrete_sequence=px.colors.qualitative.Antique,
         )
-        col1.subheader("Skill Distribution", help='Distribution of various skills used in the filtered state')
+        col1.subheader(
+            "Skill Distribution",
+            help="Distribution of various skills used in the filtered state",
+        )
         col1.plotly_chart(fig, use_container_width=True)
 
         title_counts = {}
@@ -513,7 +527,10 @@ def main():
             hole=0.4,
             color_discrete_sequence=px.colors.qualitative.Antique,
         )
-        col2.subheader("Job Title Distribution", help='Distribution of various job titles in the filtered sector')
+        col2.subheader(
+            "Job Title Distribution",
+            help="Distribution of various job titles in the filtered sector",
+        )
         col2.plotly_chart(fig, use_container_width=True)
         st.divider()
 
@@ -521,7 +538,9 @@ def main():
             "Overall Job Rating Metrics (out of 5)"
             if state_select == "All States"
             else "State-wise job rating vs. Overall rating (out of 5)",
-            help='Overall job rating metrics' if state_select=='All States' else 'Comparison of rating metrics of the filtered state with overall rating'
+            help="Overall job rating metrics"
+            if state_select == "All States"
+            else "Comparison of rating metrics of the filtered state with overall rating",
         )
         col1, col2, col3 = st.columns([1, 3, 1])
         filtered_rating = round(state_df["Rating"].mean(), 2)
@@ -534,13 +553,14 @@ def main():
             ),
         )
 
-    elif nav=='PygWalker Exploration':
+    elif nav == "PygWalker Exploration":
         pyg_html = pyg.walk(df, return_html=True)
         components.html(pyg_html, height=1000, scrolling=True)
 
-    elif nav=='Info':
-        st.header('DataGlimpse: A Window into the Data Science Job Market')
-        st.markdown('''
+    elif nav == "Info":
+        st.header("DataGlimpse: A Window into the Data Science Job Market")
+        st.markdown(
+            """
         DataGlimpse, a cutting-edge dashboard web app, is your gateway to the dynamic world of data science job postings on Glassdoor.
         With DataGlimpse, you can filter job postings by sector or by state to see what kind of data science jobs are available in your area of interest.
         DataGlimpse offers an all-encompassing view of coveted data science positions, right at your fingertips.
@@ -555,7 +575,8 @@ def main():
         * Number of Jobs Per Sector: Curious about the abundance of job opportunities in each sector? DataGlimpse offers an overview of the number of data science jobs available in specific industries, guiding you towards the most favorable career paths.
                     
         Embrace the future of job hunting with DataGlimpse - your ultimate companion in navigating the ever-evolving data science job market!
-''')
+"""
+        )
 
 
 if __name__ == "__main__":
