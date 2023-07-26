@@ -78,8 +78,8 @@ st.set_page_config(page_title="DataGlimpse", page_icon="📊", layout="wide")
 def main():
     nav = option_menu(
         None,
-        ["Filter by Sector", "Filter by State", "PygWalker Exploration", "Info"],
-        icons=["building", "geo-alt", "clipboard2-data", "info"],
+        ["Filter by Sector", "Filter by State", "Info"],
+        icons=["building", "geo-alt", "info"],
         default_index=0,
         menu_icon="list",
         orientation="horizontal",
@@ -552,10 +552,6 @@ def main():
                 round(filtered_rating - overall_rating, 2),
             ),
         )
-
-    elif nav == "PygWalker Exploration":
-        pyg_html = pyg.walk(df, return_html=True)
-        components.html(pyg_html, height=1000, scrolling=True)
 
     elif nav == "Info":
         st.header("DataGlimpse: A Window into the Data Science Job Market")
